@@ -21,7 +21,7 @@ void crack(int rank, char *guess) {
     }
    
     for (int i = 0; i < 256; i++) {
-        // printf("i: %d\n", i);
+        
         guess[rank] = i;
         
 
