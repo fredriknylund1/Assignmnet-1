@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
+#include <math.h>
 #include "crackme.h"
 
-void crack(int rank, int depth, char *guess, int size, int num_threads, int hit) {
+void recursive_crack(int rank, int depth, char *guess, int size, int num_threads, int hit) {
 
     int new_depth = depth + 1;
 
@@ -19,7 +20,7 @@ void crack(int rank, int depth, char *guess, int size, int num_threads, int hit)
 			// printf("i: %d\n", i);
 			guess[depth] = i;
 		
-			crack(rank, new_depth, guess, size, num_threads, hit);
+			recursive_crack(rank, new_depth, guess, size, num_threads, hit);
 			if (hit == 1)
 				return;
 
@@ -44,36 +45,57 @@ void crack(int rank, int depth, char *guess, int size, int num_threads, int hit)
 		
 			guess[depth] = i;
 			
-			crack(rank, new_depth, guess, size, num_threads, hit);
+			recursive_crack(rank, new_depth, guess, size, num_threads, hit);
 			if (hit == 1)
 				return;
 		}
 	}
 }
 
-// void crack2(int depth, char *guess, int size) {
-// 	int new_depth = depth + 1;
+void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threads) {
 
-//     if (depth >= size) {
+	int num_chars = 256;
+	long size = pow(num_chars, sizepass);
+	long div = num_chars / num_threads;
+	int start = rank * div;
+	int limit = start + div;
 
-//         if (p(size, guess) == 0) {
-//             printf("HIT\n");
-//             hit = 1;
-//             return;
-//         } 
-//         return;
-//     }
-   
-//     for (int i = 0; i < 256; i++) {
-        
-//         guess[depth] = i;
-        
+	printf("start: %d\nlimit: %d\n", start, limit);
+	long i = start;
+	
+	while (i < size) {
+		
+		if (p(sizepass, guess) == 0) {
+			printf("hit! i: %ld\n", i);
+			return;
+		}
 
-//         crack2(new_depth, guess, size);
-//         if (hit == 1)
-//             return;
-//     }
-// }
+		for (int index = sizepass - 1; index >= 0; index--) {
+			// printf("guess[index]: %d | num_chars - 1: %d\n", (int)guess[index], num_chars - 1);
+			if (index == sizepass - 1) {
+
+				if (guess[index] < limit - 1) {
+					guess[index] += 1;
+					break;
+				} else {
+					guess[index] = start;
+				}
+
+			} else {
+
+				if (guess[index] < num_chars - 1) {
+					guess[index] += 1;
+					break;
+				} else {
+					guess[index] = 0;
+				}
+
+			}
+		}
+
+		i++;
+	}
+}
 
 int main(int argc, char **argv){
 	if (argc != 2){
@@ -87,26 +109,24 @@ int main(int argc, char **argv){
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-	printf("num threads: %d\n", world_size);
-	printf("word size: %d\n", sizePass);
+	
+	unsigned char guess[sizePass];
 
-	// if (!world_rank){
-	// 	printf("PID %d, %d\n", world_rank, p(sizePass, "ToTest0"));
-	// }
-	// else if (world_rank == 1){
-	// 	printf("PID %d, %d\n", world_rank, p(sizePass, "ToTest1"));
-	// }
+	for (int i = 0; i < sizePass; i++) {
+		guess[i] = 0;
+	}
 
 	if (world_rank == 0) {
-		char guess[sizePass];
-		int hit = 0;
-		crack(world_rank, 0, guess, sizePass, world_size, hit);
-		// crack2(0, guess, sizePass);
+		iterative_crack(guess, sizePass, world_rank, world_size);
 	} else if (world_rank == 1) {
-		char guess[sizePass];
-		int hit = 0;
-		crack(world_rank, 0, guess, sizePass, world_size, hit);
+		iterative_crack(guess, sizePass, world_rank, world_size);
 	}
+	
+	int total = 0;
+	for (int i = 0; i < sizePass; i++) {
+		total += guess[i];
+	}
+	printf("guess: %d\n", total);
 	
 	MPI_Finalize();
 	return 0;
