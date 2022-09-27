@@ -66,7 +66,14 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 	while (i < size) {
 		
 		if (p(sizepass, guess) == 0) {
-			printf("hit! i: %ld\n", i);
+
+			int total = 0;
+			for (int i = 0; i < sizepass; i++) {
+			total += guess[i];
+			}
+			printf("guess: %d\n", total);
+
+			MPI_Abort(MPI_COMM_WORLD, 0);
 			return;
 		}
 
