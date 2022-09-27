@@ -123,11 +123,13 @@ int main(int argc, char **argv){
 		guess[i] = 0;
 	}
 
-	if (world_rank == 0) {
-		iterative_crack(guess, sizePass, world_rank, world_size);
-	} else if (world_rank == 1) {
-		iterative_crack(guess, sizePass, world_rank, world_size);
-	}
+	// if (world_rank == 0) {
+	// 	iterative_crack(guess, sizePass, world_rank, world_size);
+	// } else if (world_rank == 1) {
+	// 	iterative_crack(guess, sizePass, world_rank, world_size);
+	// }
+
+	iterative_crack(guess, sizePass, world_rank, world_size);
 	
 	int total = 0;
 	for (int i = 0; i < sizePass; i++) {
