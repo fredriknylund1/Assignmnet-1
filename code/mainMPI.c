@@ -68,14 +68,15 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 		
 		if (p(sizepass, guess) == 0) {
 
+			unsigned long long end = gettime();
+
 			int total = 0;
 			for (int i = 0; i < sizepass; i++) {
 			total += guess[i];
 			}
 			// printf("guess: %d\n", total);
 
-			unsigned long long end = gettime();
-	
+			printf("HIT!\n");
 			printf("time: %llu\n", (end - starttime));
 
 			MPI_Abort(MPI_COMM_WORLD, 0);
