@@ -3,6 +3,7 @@
 #include <mpi.h>
 #include <math.h>
 #include "crackme.h"
+#include "time.h"
 
 void recursive_crack(int rank, int depth, char *guess, int size, int num_threads, int hit) {
 
@@ -52,7 +53,7 @@ void recursive_crack(int rank, int depth, char *guess, int size, int num_threads
 	}
 }
 
-void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threads) {
+void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threads, unsigned long long starttime) {
 
 	int num_chars = 128;
 	long size = pow(num_chars, sizepass);
@@ -72,6 +73,10 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 			total += guess[i];
 			}
 			printf("guess: %d\n", total);
+
+			unsigned long long end = gettime();
+	
+			printf("time: %llu\n", (end - start));
 
 			MPI_Abort(MPI_COMM_WORLD, 0);
 			return;
@@ -136,9 +141,13 @@ int main(int argc, char **argv){
 	// } else if (world_rank == 1) {
 	// 	iterative_crack(guess, sizePass, world_rank, world_size);
 	// }
-
-	iterative_crack(guess, sizePass, world_rank, world_size);
+	unsigned long long start, end;
+	start = gettime();
+	iterative_crack(guess, sizePass, world_rank, world_size, start);
+	// end = gettime();
 	
+	
+
 	int total = 0;
 	for (int i = 0; i < sizePass; i++) {
 		total += guess[i];
