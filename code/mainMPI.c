@@ -149,11 +149,11 @@ int main(int argc, char **argv){
 	
 	
 
-	int total = 0;
-	for (int i = 0; i < sizePass; i++) {
-		total += guess[i];
-	}
-	printf("guess: %d\n", total);
+	// int total = 0;
+	// for (int i = 0; i < sizePass; i++) {
+	// 	total += guess[i];
+	// }
+	// printf("guess: %d\n", total);
 	
 	MPI_Finalize();
 	return 0;
