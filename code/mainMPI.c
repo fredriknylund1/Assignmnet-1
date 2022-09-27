@@ -54,7 +54,7 @@ void recursive_crack(int rank, int depth, char *guess, int size, int num_threads
 
 void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threads) {
 
-	int num_chars = 256;
+	int num_chars = 128;
 	long size = pow(num_chars, sizepass);
 	long div = num_chars / num_threads;
 	int start = rank * div;
@@ -78,7 +78,15 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 		}
 
 		for (int index = sizepass - 1; index >= 0; index--) {
-			// printf("guess[index]: %d | num_chars - 1: %d\n", (int)guess[index], num_chars - 1);
+
+			// if (rank == 0) 
+			// 	printf("index: %d, guess[index]: %d | num_chars - 1: %d\n", index, (int)guess[index], num_chars - 1);
+
+			// 	for (int i = 0; i < num_chars; i++) {
+			// 		printf("%d", guess[i]);
+			// 	}
+			// 	printf("\n");
+
 			if (index == sizepass - 1) {
 
 				if (guess[index] < limit - 1) {
