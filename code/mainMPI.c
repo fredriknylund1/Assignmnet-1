@@ -61,7 +61,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 	int start = rank * div;
 	int limit = start + div;
 
-	printf("start: %d\nlimit: %d\n", start, limit);
+	// printf("start: %d\nlimit: %d\n", start, limit);
 	long i = start;
 	
 	while (i < size) {
@@ -72,7 +72,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 			for (int i = 0; i < sizepass; i++) {
 			total += guess[i];
 			}
-			printf("guess: %d\n", total);
+			// printf("guess: %d\n", total);
 
 			unsigned long long end = gettime();
 	
