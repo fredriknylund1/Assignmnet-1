@@ -76,7 +76,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 
 			unsigned long long end = gettime();
 	
-			printf("time: %llu\n", (end - start));
+			printf("time: %llu\n", (end - starttime));
 
 			MPI_Abort(MPI_COMM_WORLD, 0);
 			return;
