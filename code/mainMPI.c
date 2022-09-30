@@ -41,38 +41,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 		}
 
 		/* Iterates through each index in the char array, starting with the upmost index. */
-		// for (int index = sizepass - 1; index >= 0; index--) {
-
-		// 	// if (rank == 0) 
-		// 	// 	printf("index: %d, guess[index]: %d | num_chars - 1: %d\n", index, (int)guess[index], num_chars - 1);
-
-		// 	// 	for (int i = 0; i < sizepass; i++) {
-		// 	// 		printf("%d\n", guess[i]);
-		// 	// 	}
-		// 	// 	printf("\n");
-
-		// 	if (index == sizepass - 1) {
-
-		// 		if (guess[index] < limit - 1) {
-		// 			guess[index] += 1;
-		// 			break;
-		// 		} else {
-		// 			guess[index] = start;
-		// 		}
-
-		// 	} else {
-
-		// 		if (guess[index] < num_chars - 1) {
-		// 			guess[index] += 1;
-		// 			break;
-		// 		} else {
-		// 			guess[index] = 0;
-		// 		}
-
-		// 	}
-		// }
-
-		for (int index = 0; index >= sizepass - 1; index++) {
+		for (int index = sizepass - 1; index >= 0; index--) {
 
 			// if (rank == 0) 
 			// 	printf("index: %d, guess[index]: %d | num_chars - 1: %d\n", index, (int)guess[index], num_chars - 1);
@@ -82,7 +51,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 			// 	}
 			// 	printf("\n");
 
-			if (index == 0) {
+			if (index == sizepass - 1) {
 
 				if (guess[index] < limit - 1) {
 					guess[index] += 1;
