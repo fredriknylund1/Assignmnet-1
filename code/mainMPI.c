@@ -5,7 +5,7 @@
 #include "crackme.h"
 #include "time.h"
 
-void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threads, unsigned long long starttime) {
+void crack_password(unsigned char *guess, int sizepass, int rank, int num_threads, unsigned long long starttime) {
 
 	/* Each process calculates what part of the possible characters to check. */
 	int num_chars = 128;
@@ -14,10 +14,8 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 	int start = rank * div;
 	int limit = start + div;
 
-	// printf("start: %d\nlimit: %d\n", start, limit);
 	long i = start;
 	
-
 	while (i < size) {
 		
 
@@ -30,9 +28,7 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 			for (int i = 0; i < sizepass; i++) {
 			total += guess[i];
 			}
-			printf("guess: %d\n", total);
-
-			printf("HIT!\n");
+		
 			printf("time: %llu\n", (end - starttime));
 
 			/* If guess is correct, all processes are aborted. */
@@ -43,14 +39,9 @@ void iterative_crack(unsigned char *guess, int sizepass, int rank, int num_threa
 		/* Iterates through each index in the char array, starting with the upmost index. */
 		for (int index = sizepass - 1; index >= 0; index--) {
 
-			// if (rank == 0) 
-			// 	printf("index: %d, guess[index]: %d | num_chars - 1: %d\n", index, (int)guess[index], num_chars - 1);
-
-			// 	for (int i = 0; i < sizepass; i++) {
-			// 		printf("%d\n", guess[i]);
-			// 	}
-			// 	printf("\n");
-
+			/* Checks if current index is the upmost index in the array,
+			 If that is the case, the characters on that index only ranges between the process' start and limit values.
+			 Otherwise, the characthers ranges all possible characters. */
 			if (index == sizepass - 1) {
 
 				if (guess[index] < limit - 1) {
@@ -88,31 +79,16 @@ int main(int argc, char **argv){
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-	
 	unsigned char guess[sizePass];
 
 	for (int i = 0; i < sizePass; i++) {
 		guess[i] = 0;
 	}
 
-	// if (world_rank == 0) {
-	// 	iterative_crack(guess, sizePass, world_rank, world_size);
-	// } else if (world_rank == 1) {
-	// 	iterative_crack(guess, sizePass, world_rank, world_size);
-	// }
 	unsigned long long start, end;
 	start = gettime();
-	iterative_crack(guess, sizePass, world_rank, world_size, start);
-	// end = gettime();
-	
-	
+	crack_password(guess, sizePass, world_rank, world_size, start);
 
-	// int total = 0;
-	// for (int i = 0; i < sizePass; i++) {
-	// 	total += guess[i];
-	// }
-	// printf("guess: %d\n", total);
-	
 	MPI_Finalize();
 	return 0;
 }
